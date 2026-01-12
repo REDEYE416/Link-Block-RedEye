@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: discord-link-remover
+    env: python
+    region: ohio
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn keep_alive:app
+    envVars:
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: PORT
+        value: 8080
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /
+    
+  - type: worker
+    name: discord-bot-worker
+    env: python
+    region: ohio
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: OWNER_ID
+        sync: false
+    plan: free
+    autoDeploy: true
